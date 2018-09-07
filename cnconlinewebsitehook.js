@@ -2,7 +2,7 @@
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  A script for those game hosts which are always AFK. It will play sound when room is full or nearly full.
+// @description  A script for those game hosts who are AFK. It will play sound when room is full or nearly full.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
 // @grant        none
@@ -18,7 +18,7 @@ function main() {
     window.playerNameField = "PlayerNameField.";
 
     //from: http://s1download-universal-soundbank.com/wav/2838.wav
-    window[myPrefix + "sound"] = new Audio("https://lanyi.altervista.org/NewDirectory/Test/uploads/2838[2].wav");
+    window[myPrefix + "sound"] = new Audio("https://raw.githubusercontent.com/BSG-75/C-C-Online-Website-hooks/master/2838%5B2%5D.wav");
     function notifyPlayer() {
         window[myPrefix + "sound"].play();
     }
@@ -32,7 +32,7 @@ function main() {
     };
     getUserSection = function(response, gamename) {
         let myFieldID = myPrefix + playerNameField + gamename;
-        let myFieldStyle = "background: #0060A0; margin-left: 1em; padding-left: 0.5em; padding-right: 0.5em;"
+        let myFieldStyle = "background: #A00060; margin-left: 1em; padding-left: 0.5em; padding-right: 0.5em;"
         let myFieldDefaultValue = "&lt;Type your nickname here~&gt;";
         let previousField = document.getElementById(myFieldID);
         let myFieldValue = myFieldDefaultValue;
