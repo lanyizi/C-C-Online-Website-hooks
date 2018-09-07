@@ -28,7 +28,7 @@ function main() {
     
     window[myPrefix + "onMyFieldFocus"] = function(field) {
         console.log(field);
-        let myFieldID = myPrefix + playerNameField + gamename;
+        let myFieldID = field.id;
         if(!window[myFieldID] || window[myFieldID].length == 0) {
             field.innerText = "";
         }
@@ -36,7 +36,7 @@ function main() {
     
     window[myPrefix + "onMyFieldInput"] = function(field) {
         console.log(field);
-        let myFieldID = myPrefix + playerNameField + gamename;
+        let myFieldID = field.id;
         window[myFieldID] = field.innerText;
     };
     
@@ -57,8 +57,8 @@ function main() {
         }
 
         let attributes = "contenteditable = \"plaintext-only\" id = \"" + myFieldID + "\" style = \"" + myFieldStyle + "\"";
-        attributes += " onfocus = \"" + myPrefix + "onMyFieldFocus" + "\" ";
-        attributes += " oninput = \"" + myPrefix + "onMyFieldInput" + "\" ";
+        attributes += " onfocus = \"" + myPrefix + "onMyFieldFocus(this);" + "\" ";
+        attributes += " oninput = \"" + myPrefix + "onMyFieldInput(this);" + "\" ";
         let myField = "<span " + attributes +">" + escapeHTMLTags(myFieldValue) + "</span>";
 
         let result = originalGetUserSection(response, gamename);
