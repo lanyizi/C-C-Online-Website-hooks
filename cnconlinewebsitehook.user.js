@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
-// @version      0.101
+// @version      0.10101
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
@@ -21,6 +21,23 @@ function main() {
         window[myPrefix + "sound"].play();
     }
 
+    //https://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
+    function escapeHTMLTags(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    
+    window[myPrefix + "onMyFieldFocus"] = function(field) {
+        console.log(field);
+        if(!window[myFieldID] || window[myFieldID].length == 0) {
+            field.innerText = "";
+        }
+    };
+    
+    window[myPrefix + "onMyFieldInput"] = function(field) {
+        console.log(field);
+        window[myFieldID] = field.innerText;
+    };
+    
     let originalSetUserBarInfo = setUserbarInfo;
     let originalGetUserSection = getUserSection;
     let originalHandleJSON = handleJSON;
@@ -38,7 +55,9 @@ function main() {
         }
 
         let attributes = "contenteditable = \"plaintext-only\" id = \"" + myFieldID + "\" style = \"" + myFieldStyle + "\"";
-        let myField = "<span " + attributes +">" + myFieldValue + "</span>";
+        attributes += " onfocus = \"" + myPrefix + "onMyFieldFocus" + "\" ";
+        attributes += " oninput = \"" + myPrefix + "onMyFieldInput" + "\" ";
+        let myField = "<span " + attributes +">" + escapeHTMLTags(myFieldValue) + "</span>";
 
         let result = originalGetUserSection(response, gamename);
         result.find("h3").append(myField);
