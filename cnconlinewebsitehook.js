@@ -10,7 +10,7 @@
 // @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // ==/UserScript==
 
-
+//test
 function main() {
 
     window.myPrefix = "RA3Bar.Lanyi.CNCOLWebsiteNotifier.";
