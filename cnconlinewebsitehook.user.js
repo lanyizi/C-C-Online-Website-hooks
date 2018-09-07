@@ -12,8 +12,8 @@
 
 function main() {
 
-    window.myPrefix = "RA3Bar.Lanyi.CNCOLWebsiteNotifier.";
-    window.playerNameField = "PlayerNameField.";
+    window.myPrefix = "RA3Bar_Lanyi_CNCOLWebsiteNotifier_";
+    window.playerNameField = "PlayerNameField_";
 
     //from: http://s1download-universal-soundbank.com/wav/2838.wav
     window[myPrefix + "sound"] = new Audio("https://raw.githubusercontent.com/BSG-75/C-C-Online-Website-hooks/master/2838%5B2%5D.wav");
