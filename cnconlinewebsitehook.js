@@ -11,8 +11,6 @@
 // ==/UserScript==
 
 
-
-//..
 function main() {
 
     window.myPrefix = "RA3Bar.Lanyi.CNCOLWebsiteNotifier.";
