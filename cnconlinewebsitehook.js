@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
 // @version      0.1
 // @description  A script for those game hosts who are AFK. It will play sound when room is full or nearly full.
 // @author       [RA3Bar]Lanyi
