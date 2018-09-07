@@ -10,7 +10,6 @@
 // @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // ==/UserScript==
 
-//test~~
 function main() {
 
     window.myPrefix = "RA3Bar.Lanyi.CNCOLWebsiteNotifier.";
@@ -33,9 +32,8 @@ function main() {
         let myFieldID = myPrefix + playerNameField + gamename;
         let myFieldStyle = "background: #A00060; margin-left: 1em; padding-left: 0.5em; padding-right: 0.5em;"
         let myFieldDefaultValue = "&lt;Type your nickname here~&gt;";
-        let previousField = document.getElementById(myFieldID);
         let myFieldValue = myFieldDefaultValue;
-        if(window[myFieldID]) {
+        if(window[myFieldID] && window[myFieldID].length > 0) {
             myFieldValue = window[myFieldID];
         }
 
