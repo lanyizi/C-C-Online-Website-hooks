@@ -7,7 +7,7 @@
 // @match        https://cnc-online.net/*
 // @grant        none
 // @run-at       document-end
-// @license      GPL-3.0
+// @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // ==/UserScript==
 
 
