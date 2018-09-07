@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
-// @version      0.10101
+// @version      0.10102
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
@@ -48,7 +48,7 @@ function main() {
     getUserSection = function(response, gamename) {
         let myFieldID = myPrefix + playerNameField + gamename;
         let myFieldStyle = "background: #A00060; margin-left: 1em; padding-left: 0.5em; padding-right: 0.5em;"
-        let myFieldDefaultValue = "&lt;Type your nickname here~&gt;";
+        let myFieldDefaultValue = "<Type your nickname here~>";
         let myFieldValue = myFieldDefaultValue;
         if(window[myFieldID] && window[myFieldID].length > 0) {
             myFieldValue = window[myFieldID];
