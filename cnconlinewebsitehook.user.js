@@ -14,11 +14,11 @@ function main() {
 
     window.myPrefix = "RA3Bar_Lanyi_CNCOLWebsiteNotifier_";
     window.playerNameField = "PlayerNameField_";
-    
+
     for (let i = 0; i < gamenames.length; ++i)  {
         window[myPrefix + playerNameField + gamenames[i]] = null;
     }
-    
+
     //from: http://s1download-universal-soundbank.com/wav/2838.wav
     window[myPrefix + "sound"] = new Audio("https://raw.githubusercontent.com/BSG-75/C-C-Online-Website-hooks/master/2838%5B2%5D.wav");
     function notifyPlayer() {
@@ -29,7 +29,7 @@ function main() {
     function escapeHTMLTags(str) {
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
-    
+
     //onfocus
     window[myPrefix + "onMyFieldFocus"] = function(field) {
         let myFieldID = field.id;
@@ -37,13 +37,13 @@ function main() {
             field.innerText = "";
         }
     };
-    
+
     //oninput
     window[myPrefix + "onMyFieldInput"] = function(field) {
         let myFieldID = field.id;
         window[myFieldID] = field.innerText.trim();
     };
-    
+
     let originalSetUserBarInfo = setUserbarInfo;
     let originalGetUserSection = getUserSection;
     let originalHandleJSON = handleJSON;
@@ -60,10 +60,10 @@ function main() {
             myFieldValue = window[myFieldID];
         }
 
-        let attributes = "contenteditable = \"plaintext-only\" id = \"" + myFieldID + "\" style = \"" + myFieldStyle + "\"";
+        let attributes = "contenteditable = \"true\" id = \"" + myFieldID + "\" style = \"" + myFieldStyle + "\"";
         attributes += " onfocus = \"" + myPrefix + "onMyFieldFocus(this);" + "\" ";
         attributes += " oninput = \"" + myPrefix + "onMyFieldInput(this);" + "\" ";
-        let myField = "<span " + attributes +">" + escapeHTMLTags(myFieldValue) + "</span>";
+        let myField = "<span " + attributes + ">" + escapeHTMLTags(myFieldValue) + "</span>";
 
         let result = originalGetUserSection(response, gamename);
         result.find("h3").append(myField);
