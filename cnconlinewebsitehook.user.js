@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
-// @version      0.1030011
+// @version      0.1030012
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
@@ -125,22 +125,17 @@ function main() {
             let nickname = window[myPrefix + playerNameField + gamename];
             let games = response[gamename].games.staging;
             
-            console.log("nickname: " + nickname);
             if(nickname) {
-                console.log("checking if it's in game " + gamename);
                 for(let userNickname in response[gamename].users) {
                     if(userNickname.toUpperCase() == nickname.toUpperCase()) {
                         let inRoom = false;
                         games.forEach(function(game) { 
                             if(game.players.nickname == userNickname) {
-                                console.log("player is inside a room");
                                 inRoom = true;
                             }
                         });
                         if(!inRoom) {
-                            console.log("player in lobby");
                             if(window.anyNewStagingGames(games)) {
-                                console.log("new staging games, notifying player...");
                                 notifyPlayer();
                             }
                         }
@@ -160,10 +155,8 @@ function main() {
                                 let realPlayers = parseInt(game.numRealPlayers);
                                 let observers = parseInt(game.numObservers);
                                 let maxPlayers = parseInt(game.maxRealPlayers);
-                                console.log("Player in room. totalPlayers = " + (realPlayers + observers));
                                 if(realPlayers + observers >= maxPlayers * 0.5) {
                                     if(window.playersChanged(game.host, game.players)) {
-                                        console.log("Players changed");
                                         notifyPlayer();
                                     }
                                 }
