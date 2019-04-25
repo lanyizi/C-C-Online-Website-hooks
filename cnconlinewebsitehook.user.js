@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
-// @version      0.1030005
+// @version      0.1030007
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
@@ -105,9 +105,16 @@ function main() {
         attributes += " oninput = \"" + myPrefix + "onMyFieldInput(this);" + "\" ";
         let myField = "<span " + attributes + ">" + escapeHTMLTags(myFieldValue) + "</span>";
         
-        let monitorStagingGameAttribtues = " oninput=\"window.monitorStagingGame = this.value;\" ";
+        let previousValue = false;
+        let previous = document.getElementById(window.monitorStagingGameId);
+        if(previous) {
+            previousValue = $("#" + window.monitorStagingGameId + ":checked").val();
+        }
+        let monitorStagingGameAttribtues = " id=\"" + window.monitorStagingGameId + "\" ";
         monitorStagingGameAttribtues += " type=\"checkbox\" ";
-        monitorStagingGameAttribtues += " value=\"" + window.monitorStagingGame + "\" ";
+        if(previousValue) {
+            monitorStagingGameAttribtues += " checked=\"true\" "
+        }
         let monitorStagingGame = "<input " + monitorStagingGameAttribtues + ">Monitor Staging Games</input>"
         
         let result = originalGetUserSection(response, gamename);
@@ -123,7 +130,7 @@ function main() {
             let nickname = window[myPrefix + playerNameField + gamename];
             let games = response[gamename].games.staging;
             
-            if(window.monitorStagingGame && nickname) {
+            if($("#" + window.monitorStagingGameId + ":checked").val() && nickname) {
                 for(let userNickname in response[gamename].users) {
                     if(userNickname.toUpperCase() == nickname.toUpperCase()) {
                         if(window.anyNewStagingGames(games)) {
