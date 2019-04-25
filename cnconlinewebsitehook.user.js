@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
-// @version      0.1030009
+// @version      0.1030010
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
@@ -13,17 +13,21 @@
 function main() {
 
     window.anyNewStagingGames = function(newStaging) {
-        let mapped = newStaging.map(function(game) { return game.host.id + game.map + game.title; });
-        let result = false;
-        for(let i = 0; i < mapped.length; ++i) {
-            if(window.previousMapped.indexOf(mapped[i]) == -1) {
-                result = true;
-                break;
+        let oldGames = window.oldStagingGames;
+        let newGames = newStaging.map(function(game) { return game.host.id + game.map + game.title; });
+        window.oldStagingGames = newGames;
+        
+        if(!oldGames) {
+            return false;
+        }
+        
+        for(let i = 0; i < newGames.length; ++i) {
+            if(oldGames.indexOf(newGames[i]) == -1) {
+                return true;
             }
         }
         
-        window.previousMapped = mapped;
-        return result;
+        return false;
     };
     
     window.playersChanged = function(host, newPlayers) {
@@ -117,17 +121,24 @@ function main() {
             let nickname = window[myPrefix + playerNameField + gamename];
             let games = response[gamename].games.staging;
             
+            console.log("nickname: " + nickname);
             if(nickname) {
+                console.log("checking if it's in game " + gamename);
                 for(let userNickname in response[gamename].users) {
                     if(userNickname.toUpperCase() == nickname.toUpperCase()) {
                         let inRoom = false;
                         games.forEach(function(game) { 
                             if(game.players.nickname == userNickname) {
+                                console.log("player is inside a room");
                                 inRoom = true;
                             }
                         });
-                        if((!inRoom) && window.anyNewStagingGames(games)) {
-                            notifyPlayer();
+                        if(!inRoom) {
+                            console.log("player in lobby");
+                            if(window.anyNewStagingGames(games)) {
+                                console.log("new staging games, notifying player...");
+                                notifyPlayer();
+                            }
                         }
                     }
                 }
@@ -141,12 +152,14 @@ function main() {
                     $.each(game.players, function(j, player) {
                         if(nickname && player.nickname) {
                             if(player.nickname.toUpperCase() == nickname.toUpperCase()) {
-
+                                
                                 let realPlayers = parseInt(game.numRealPlayers);
                                 let observers = parseInt(game.numObservers);
                                 let maxPlayers = parseInt(game.maxRealPlayers);
+                                console.log("Player in room. totalPlayers = " + (realPlayers + observers));
                                 if(realPlayers + observers >= maxPlayers * 0.5) {
                                     if(window.playersChanged(game.host, game.players)) {
+                                        console.log("Players changed");
                                         notifyPlayer();
                                     }
                                 }
