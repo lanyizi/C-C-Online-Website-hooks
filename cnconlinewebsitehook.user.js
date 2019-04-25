@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
-// @version      0.1030000
+// @version      0.1030001
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
@@ -119,7 +119,7 @@ function main() {
             let nickname = window[myPrefix + playerNameField + gamename];
             let games = response[gamename].games.staging;
             
-            if(document.getElementById(window.monitorStagingGameId).value) {
+            /* if(document.getElementById(window.monitorStagingGameId).value) {
                 foreach(let userNickname in response[gamename].users) {
                     if(userNickname.toUpperCase() == nickname.toUpperCase()) {
                         if(window.anyNewStagingGames(games)) {
@@ -127,7 +127,7 @@ function main() {
                         }
                     }
                 }
-            }
+            } */
             
             $.each(games, function(i, game) {
                 //if ( parseInt(game.numRealPlayers)+parseInt(game.numObservers) == parseInt(game.maxRealPlayers) ) {
