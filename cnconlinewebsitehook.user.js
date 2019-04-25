@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
-// @version      0.1030007
+// @version      0.1030009
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
@@ -104,22 +104,9 @@ function main() {
         attributes += " onfocus = \"" + myPrefix + "onMyFieldFocus(this);" + "\" ";
         attributes += " oninput = \"" + myPrefix + "onMyFieldInput(this);" + "\" ";
         let myField = "<span " + attributes + ">" + escapeHTMLTags(myFieldValue) + "</span>";
-        
-        let previousValue = false;
-        let previous = document.getElementById(window.monitorStagingGameId);
-        if(previous) {
-            previousValue = $("#" + window.monitorStagingGameId + ":checked").val();
-        }
-        let monitorStagingGameAttribtues = " id=\"" + window.monitorStagingGameId + "\" ";
-        monitorStagingGameAttribtues += " type=\"checkbox\" ";
-        if(previousValue) {
-            monitorStagingGameAttribtues += " checked=\"true\" "
-        }
-        let monitorStagingGame = "<input " + monitorStagingGameAttribtues + ">Monitor Staging Games</input>"
-        
+
         let result = originalGetUserSection(response, gamename);
         result.find("h3").append(myField);
-        result.find("h3").append(monitorStagingGame)
 
         return result;
     };
@@ -130,10 +117,16 @@ function main() {
             let nickname = window[myPrefix + playerNameField + gamename];
             let games = response[gamename].games.staging;
             
-            if($("#" + window.monitorStagingGameId + ":checked").val() && nickname) {
+            if(nickname) {
                 for(let userNickname in response[gamename].users) {
                     if(userNickname.toUpperCase() == nickname.toUpperCase()) {
-                        if(window.anyNewStagingGames(games)) {
+                        let inRoom = false;
+                        games.forEach(function(game) { 
+                            if(game.players.nickname == userNickname) {
+                                inRoom = true;
+                            }
+                        });
+                        if((!inRoom) && window.anyNewStagingGames(games)) {
                             notifyPlayer();
                         }
                     }
