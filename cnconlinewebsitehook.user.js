@@ -12,8 +12,48 @@
 
 function main() {
 
+    window.anyNewStagingGames = function(newStaging) {
+        let mapped = newStaging.map(function(game) { return game.host.id + game.map + game.title; });
+        let result = false;
+        for(let i = 0; i < mapped.length; ++i) {
+            if(window.previousMapped.indexOf(mapped[i]) == -1) {
+                result = true;
+                break;
+            }
+        }
+        
+        window.previousMapped = mapped;
+        return result;
+    };
+    
+    window.playersChanged = function(host, newPlayers) {
+        let newHost = host.nickanme;
+        let oldHost = window.previousHost;
+        window.previousHost = newHost;
+        
+        let oldPlayers = window.previousPlayers;
+        let mapped = newPlayers.map(function(player) { return player.nickname; });
+        window.previousPlayers = mapped;
+        
+        if(oldHost != newHost) {
+            return false;
+        }
+        
+        if(oldPlayers.length != mapped.length) {
+            return true;
+        }
+        for(let i = 0; i < mapped.length; ++i)
+        {
+            if(oldPlayers[i] != mapped[i]) {
+                return true;
+            }
+        }
+        return false;
+    };
+    
     window.myPrefix = "RA3Bar_Lanyi_CNCOLWebsiteNotifier_";
     window.playerNameField = "PlayerNameField_";
+    window.monitorStagingGameId = window.myPrefix + "monitorStagingGame";
 
     for (let i = 0; i < gamenames.length; ++i)  {
         window[myPrefix + playerNameField + gamenames[i]] = null;
@@ -64,9 +104,11 @@ function main() {
         attributes += " onfocus = \"" + myPrefix + "onMyFieldFocus(this);" + "\" ";
         attributes += " oninput = \"" + myPrefix + "onMyFieldInput(this);" + "\" ";
         let myField = "<span " + attributes + ">" + escapeHTMLTags(myFieldValue) + "</span>";
-
+        let monitorStagingGame = "<input type=\"checkbox\" id=\"" + window.monitorStagingGameId + "\">"
+        
         let result = originalGetUserSection(response, gamename);
         result.find("h3").append(myField);
+        result.find("h3").append(monitorStagingGame)
 
         return result;
     };
@@ -76,6 +118,17 @@ function main() {
             let gamename = gamenames[i];
             let nickname = window[myPrefix + playerNameField + gamename];
             let games = response[gamename].games.staging;
+            
+            if(document.getElementById(window.monitorStagingGameId).value) {
+                $.each(response[gamename].users, function(i, user) {
+                    if(user.nickanme.toUpperCase() == nickname.toUpperCase()) {
+                        if(window.anyNewStagingGames(games)) {
+                            notifyPlayer();
+                        }
+                    }
+                });
+            }
+            
             $.each(games, function(i, game) {
                 //if ( parseInt(game.numRealPlayers)+parseInt(game.numObservers) == parseInt(game.maxRealPlayers) ) {
                 //    $gameItem.addClass('full');
@@ -84,11 +137,14 @@ function main() {
                     $.each(game.players, function(j, player) {
                         if(nickname && player.nickname) {
                             if(player.nickname.toUpperCase() == nickname.toUpperCase()) {
+
                                 let realPlayers = parseInt(game.numRealPlayers);
                                 let observers = parseInt(game.numObservers);
                                 let maxPlayers = parseInt(game.maxRealPlayers);
-                                if(realPlayers + observers >= maxPlayers * 0.6) {
-                                    notifyPlayer();
+                                if(realPlayers + observers >= maxPlayers * 0.5) {
+                                    if(window.playersChanged(game.host, game.players)) {
+                                        notifyPlayer();
+                                    }
                                 }
                             }
                         }
