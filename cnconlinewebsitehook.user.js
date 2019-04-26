@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         C&C:Online (Near) Full room notifier
 // @namespace    https://github.com/BSG-75/C-C-Online-Website-hooks/
-// @version      0.1030016
+// @version      0.1030017
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @author       [RA3Bar]Lanyi
 // @match        https://cnc-online.net/*
@@ -16,7 +16,7 @@ function main() {
         let oldGames = window.oldStagingGames;
         let newGames = newStaging
             .filter(function(game) { return !game.map.startsWith("Co-Op "); })
-            .map(function(game) { return game.host.id + game.map + game.title; });
+            .map(function(game) { return game.host.id + game.title; });
         window.oldStagingGames = newGames;
         
         if(!oldGames) {
@@ -46,11 +46,13 @@ function main() {
         }
         
         if(oldPlayers.length != mapped.length) {
+            console.log("players changed: length previous: " + oldPlayers.length + "; length now: " + mapped.length);
             return true;
         }
         for(let i = 0; i < mapped.length; ++i)
         {
             if(oldPlayers[i] != mapped[i]) {
+                console.log("player changed: was" + oldPlayers[i] + "; now: " + mapped[i]);
                 return true;
             }
         }
@@ -127,7 +129,12 @@ function main() {
                 for(let userNickname in response[gamename].users) {
                     if(userNickname.toUpperCase() == nickname.toUpperCase()) {
                         let inRoom = false;
-                        games.forEach(function(game) { 
+                        response[gamename].games.staging.forEach(function(game) { 
+                            if(game.players.nickname == userNickname) {
+                                inRoom = true;
+                            }
+                        });
+                        response[gamename].games.playing.forEach(function(game) { 
                             if(game.players.nickname == userNickname) {
                                 inRoom = true;
                             }
