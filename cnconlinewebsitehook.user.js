@@ -173,6 +173,18 @@ function main() {
         }
         return result;
     };
+    
+    setInterval(getJSONInfo, 3000);
+    function getJSONInfo() {
+		$.ajax({
+			url: json_url + "?callback=?",
+			dataType: 'jsonp',
+			data: null,
+			timeout: ajax_timeout,
+			success: handleJSON,
+			error: handleJSONError,
+		});
+	}
 }
 
 (function() {
