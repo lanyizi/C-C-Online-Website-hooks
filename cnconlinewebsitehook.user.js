@@ -46,7 +46,9 @@ function main() {
         if(oldHost != newHost) {
             return false;
         }
-        
+        if(oldPlayers === undefined) {
+            return false;
+        }
         if(oldPlayers.length != mapped.length) {
             console.log("players changed: length previous: " + oldPlayers.length + "; length now: " + mapped.length);
             return true;
