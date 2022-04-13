@@ -2,7 +2,7 @@
 // @name         C&C:Online (Near) Full room notifier
 // @name:zh-CN   C&C:Online 新官网房间满人提示器
 // @namespace    https://github.com/lanyizi/C-C-Online-Website-hooks/
-// @version      0.1050001
+// @version      0.1060000
 // @description  A script for those game hosts who are AFK. It will play sound when the game is full or nearly full. It works by hooking some CNCOnline serverinfo.js functions.
 // @description:zh-CN 那些建房之后就把游戏切出去的人可以试试这个脚本，这个脚本将会在房间即将满人的时候播放声音。该该脚本通过挂钩 CNCOnline 网站的 serverinfo.js 函数来获得房间信息。
 // @author       [RA3Bar]Lanyi
@@ -34,16 +34,20 @@ function main() {
         return false;
     };
     
-    window.playersChanged = function(host, newPlayers) {
+    window.playersChanged = function(host, newPlayers, isFull) {
         let newHost = host.nickanme;
         let oldHost = window.previousHost;
+        let wasFull = window.previousWasFull;
         window.previousHost = newHost;
+        window.previousWasFull = isFull;
         
         let oldPlayers = window.previousPlayers;
         let mapped = newPlayers.map(function(player) { return player.nickname; });
         window.previousPlayers = mapped;
         
         if(oldHost != newHost) {
+            // reset to prevent false positives when joining new rooms in the future
+            window.previousWasFull = true;
             return false;
         }
         if(oldPlayers === undefined) {
@@ -60,6 +64,10 @@ function main() {
                 return true;
             }
         }
+        if(!wasFull && isFull) {
+            console.log("Full status changed from false to true");
+            return true;
+	}
         return false;
     };
     
